@@ -35,18 +35,6 @@ CREATE TABLE IF NOT EXISTS Jogador (
         REFERENCES Objetivo (Descrição)
 );
 
-CREATE TABLE IF NOT EXISTS AtuaComo (
-IDUsuário INT UNSIGNED NOT NULL,
-CorJogador CHAR(8) NOT NULL,
-CONSTRAINT PKAtuaComo
-PRIMARY KEY (CorJogador, IDUsuário),
-CONSTRAINT FK1AtuaComo
-FOREIGN KEY (IDUsuário) REFERENCES Usuário(ID),
-CONSTRAINT FK2AtuaComo
-FOREIGN KEY (CorJogador) REFERENCES Jogador(Cor)
-);
-
-
 
 CREATE TABLE IF NOT EXISTS Grupo (
     Nome VARCHAR(30) NOT NULL,
@@ -293,13 +281,11 @@ CREATE TABLE IF NOT EXISTS Possui (
     IDUsuário INT UNSIGNED NOT NULL,
     CorJogador CHAR(10) NOT NULL,
     Tipo CHAR(9) NOT NULL,
-    CONSTRAINT PKPossui PRIMARY KEY (NomeCarta , IDUsuário , CorJogador , Tipo),
+    CONSTRAINT PKPossui PRIMARY KEY (NomeCarta , IDUsuário , CorJogador),
     CONSTRAINT FK1Possui FOREIGN KEY (NomeCarta)
         REFERENCES Carta (Nome),
     CONSTRAINT FK2Possui FOREIGN KEY (IDUsuário)
         REFERENCES Usuário (ID),
     CONSTRAINT FK3Possui FOREIGN KEY (CorJogador)
         REFERENCES Jogador (Cor),
-    CONSTRAINT FK4Possui FOREIGN KEY (Tipo)
-        REFERENCES Carta (Tipo)
 );
