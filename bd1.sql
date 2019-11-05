@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS Usuário (
     Nome CHAR(10) NOT NULL,
     Idade INT UNSIGNED,
     Sexo CHAR(1),
-    Ranking INT UNSIGNED NOT NULL,
-    ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    Ranking INT UNSIGNED NOT NULL UNIQUE,
+    ID INT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
     PartidasGanhas INT UNSIGNED NOT NULL,
     PartidasJogadas INT UNSIGNED NOT NULL,
     TempoJogado TIME NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS Jogador (
     CONSTRAINT PKJogador PRIMARY KEY (ID , Cor),
     CONSTRAINT FK1Jogador FOREIGN KEY (ID)
         REFERENCES Usuário (ID),
-    CONSTRAINT FK2Jogador FOREIGN KEY (DescriçãoObjetivo)
+    CONSTRAINT FK2Jogador FOREIGN KEY (DescriçãoObjetivo) 
         REFERENCES Objetivo (Descrição)
 );
 
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS Grupo (
 
 
 CREATE TABLE IF NOT EXISTS Partida (
-    ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    ID INT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
     NúmeroDeJogadores INT NOT NULL,
     TempoPartida TIME,
     DataHora DATETIME NOT NULL,
@@ -129,11 +129,9 @@ CREATE TABLE IF NOT EXISTS Ocupa (
     CorJogador CHAR(8) NOT NULL,
     NomeTerritório INT NOT NULL,
     CONSTRAINT PKOcupa PRIMARY KEY (IDUsuário , CorJogador , NomeTerritório),
-    CONSTRAINT FK1Ocupa FOREIGN KEY (IDUsuário)
-        REFERENCES Usuário (ID),
-    CONSTRAINT FK2Ocupa FOREIGN KEY (CorJogador)
-        REFERENCES Jogador (Cor),
-    CONSTRAINT FK3Ocupa FOREIGN KEY (NomeTerritório)
+    CONSTRAINT FK1Ocupa FOREIGN KEY (IDUsuário,CorJogador)
+        REFERENCES Jogador (ID,Cor),
+    CONSTRAINT FK2Ocupa FOREIGN KEY (NomeTerritório)
         REFERENCES Território (Nome)
 );
 
@@ -226,10 +224,8 @@ CREATE TABLE IF NOT EXISTS Conquista (
     CorJogador CHAR(8) NOT NULL,
     NomeContinente VARCHAR(20) NOT NULL,
     CONSTRAINT PKConquista PRIMARY KEY (IDUsuário , CorJogador , NomeContinente),
-    CONSTRAINT FK1Conquista FOREIGN KEY (IDUsuário)
-        REFERENCES Usuário (ID),
-    CONSTRAINT FK2Conquista FOREIGN KEY (CorJogador)
-        REFERENCES Jogador (Cor),
+    CONSTRAINT FK1Conquista FOREIGN KEY (IDUsuário,CorJogador)
+        REFERENCES Jogador (ID,Cor),
     CONSTRAINT FK3Conquista FOREIGN KEY (NomeContinente)
         REFERENCES Continente (Nome)
 );
@@ -241,11 +237,9 @@ CREATE TABLE IF NOT EXISTS Joga (
     CorJogador CHAR(8) NOT NULL,
     IDPartida INT UNSIGNED NOT NULL,
     CONSTRAINT PKJoga PRIMARY KEY (IDUsuário , CorJogador , IDPartida),
-    CONSTRAINT FK1Joga FOREIGN KEY (IDUsuário)
-        REFERENCES Usuário (ID),
-    CONSTRAINT FK2Joga FOREIGN KEY (CorJogador)
-        REFERENCES Jogador (Cor),
-    FOREIGN KEY (IDPartida)
+    CONSTRAINT FK1Joga FOREIGN KEY (IDUsuário,CorJogador)
+        REFERENCES Jogador (ID,Cor),
+    CONSTRAINT FK2Joga FOREIGN KEY (IDPartida)
         REFERENCES Partida (ID)
 );
 
@@ -256,11 +250,9 @@ CREATE TABLE IF NOT EXISTS EliminaJogador (
     CorJogadorAlvo CHAR(8) NOT NULL,
     Descrição INT NOT NULL,
     CONSTRAINT PKEliminaJogador PRIMARY KEY (IDUsuárioAlvo , CorJogadorAlvo , Descrição),
-    CONSTRAINT FK1EliminaJogador FOREIGN KEY (IDUsuárioAlvo)
-        REFERENCES Usuário (ID),
-    CONSTRAINT FK2EliminaJogador FOREIGN KEY (CorJogadorAlvo)
-        REFERENCES Jogador (Cor),
-    CONSTRAINT FK3EliminaJogador FOREIGN KEY (Descrição)
+    CONSTRAINT FK1EliminaJogador FOREIGN KEY (IDUsuárioAlvo,CorJogadorAlvo)
+        REFERENCES Jogador (ID,Cor),
+    CONSTRAINT FK2EliminaJogador FOREIGN KEY (Descrição)
         REFERENCES Objetivo (Descrição)
 );
 
@@ -279,13 +271,10 @@ CREATE TABLE IF NOT EXISTS DominaContinentes (
 CREATE TABLE IF NOT EXISTS Possui (
     NomeCarta INT NOT NULL,
     IDUsuário INT UNSIGNED NOT NULL,
-    CorJogador CHAR(10) NOT NULL,
-    Tipo CHAR(9) NOT NULL,
+    CorJogador CHAR(8) NOT NULL,
     CONSTRAINT PKPossui PRIMARY KEY (NomeCarta , IDUsuário , CorJogador),
     CONSTRAINT FK1Possui FOREIGN KEY (NomeCarta)
         REFERENCES Carta (Nome),
-    CONSTRAINT FK2Possui FOREIGN KEY (IDUsuário)
-        REFERENCES Usuário (ID),
-    CONSTRAINT FK3Possui FOREIGN KEY (CorJogador)
-        REFERENCES Jogador (Cor),
+    CONSTRAINT FK2Possui FOREIGN KEY (IDUsuário,CorJogador)
+        REFERENCES Jogador (ID,Cor)
 );
