@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS Usuário (
     Idade INT UNSIGNED,
     Sexo CHAR(1),
     Ranking INT UNSIGNED NOT NULL UNIQUE,
-    ID INT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+    ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
     PartidasGanhas INT UNSIGNED NOT NULL,
     PartidasJogadas INT UNSIGNED NOT NULL,
     TempoJogado TIME NOT NULL,
@@ -30,9 +30,9 @@ CREATE TABLE IF NOT EXISTS Jogador (
     DescriçãoObjetivo INT NOT NULL,
     CONSTRAINT PKJogador PRIMARY KEY (ID , Cor),
     CONSTRAINT FK1Jogador FOREIGN KEY (ID)
-        REFERENCES Usuário (ID),
-    CONSTRAINT FK2Jogador FOREIGN KEY (DescriçãoObjetivo) 
-        REFERENCES Objetivo (Descrição)
+        REFERENCES Usuário (ID) ON UPDATE RESTRICT ON DELETE CASCADE,
+    CONSTRAINT FK2Jogador FOREIGN KEY (DescriçãoObjetivo)
+        REFERENCES Objetivo (Descrição) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
 
@@ -43,13 +43,13 @@ CREATE TABLE IF NOT EXISTS Grupo (
     IDCriador INT UNSIGNED NOT NULL,
     CONSTRAINT PKGrupo PRIMARY KEY (Nome),
     CONSTRAINT FKGrupo FOREIGN KEY (IDCriador)
-        REFERENCES Usuário (ID)
+        REFERENCES Usuário (ID) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 
 
 CREATE TABLE IF NOT EXISTS Partida (
-    ID INT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+    ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
     NúmeroDeJogadores INT NOT NULL,
     TempoPartida TIME,
     DataHora DATETIME NOT NULL,
@@ -62,19 +62,19 @@ CREATE TABLE IF NOT EXISTS Partida (
     IDUsuário6 INT UNSIGNED,
     CONSTRAINT PKPartida PRIMARY KEY (ID),
     CONSTRAINT FK1Partida FOREIGN KEY (IDUsuário1)
-        REFERENCES Usuário (ID),
+        REFERENCES Usuário (ID) ON UPDATE RESTRICT ON DELETE RESTRICT,
     CONSTRAINT FK2Partida FOREIGN KEY (IDUsuário2)
-        REFERENCES Usuário (ID),
+        REFERENCES Usuário (ID) ON UPDATE RESTRICT ON DELETE RESTRICT,
     CONSTRAINT FK3Partida FOREIGN KEY (IDUsuário3)
-        REFERENCES Usuário (ID),
+        REFERENCES Usuário (ID) ON UPDATE RESTRICT ON DELETE RESTRICT,
     CONSTRAINT FK4Partida FOREIGN KEY (IDUsuário4)
-        REFERENCES Usuário (ID),
+        REFERENCES Usuário (ID) ON UPDATE RESTRICT ON DELETE RESTRICT,
     CONSTRAINT FK5Partida FOREIGN KEY (IDUsuário5)
-        REFERENCES Usuário (ID),
+        REFERENCES Usuário (ID) ON UPDATE RESTRICT ON DELETE RESTRICT,
     CONSTRAINT FK6Partida FOREIGN KEY (IDUsuário6)
-        REFERENCES Usuário (ID),
+        REFERENCES Usuário (ID) ON UPDATE RESTRICT ON DELETE RESTRICT,
     CONSTRAINT FK7Partida FOREIGN KEY (Vencedor)
-        REFERENCES Usuário (ID)
+        REFERENCES Usuário (ID) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS ObjetivoTerritório (
     QtdTerritório INT NOT NULL,
     CONSTRAINT PKObjTerritório PRIMARY KEY (Descrição),
     CONSTRAINT FKObjTerritório FOREIGN KEY (Descrição)
-        REFERENCES Objetivo (Descrição)
+        REFERENCES Objetivo (Descrição) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS ObjetivoJogador (
     ExércitoAlvo CHAR(8) NOT NULL,
     CONSTRAINT PKObjJogador PRIMARY KEY (Descrição , ExércitoAlvo),
     CONSTRAINT FKObjJogador FOREIGN KEY (Descrição)
-        REFERENCES Objetivo (Descrição)
+        REFERENCES Objetivo (Descrição) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS ObjetivoContinente (
     Descrição INT NOT NULL,
     CONSTRAINT PKObjContinente PRIMARY KEY (Descrição),
     CONSTRAINT FKObjContinente FOREIGN KEY (Descrição)
-        REFERENCES Objetivo (Descrição)
+        REFERENCES Objetivo (Descrição) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 
@@ -129,10 +129,10 @@ CREATE TABLE IF NOT EXISTS Ocupa (
     CorJogador CHAR(8) NOT NULL,
     NomeTerritório INT NOT NULL,
     CONSTRAINT PKOcupa PRIMARY KEY (IDUsuário , CorJogador , NomeTerritório),
-    CONSTRAINT FK1Ocupa FOREIGN KEY (IDUsuário,CorJogador)
-        REFERENCES Jogador (ID,Cor),
+    CONSTRAINT FK1Ocupa FOREIGN KEY (IDUsuário , CorJogador)
+        REFERENCES Jogador (ID , Cor) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT FK2Ocupa FOREIGN KEY (NomeTerritório)
-        REFERENCES Território (Nome)
+        REFERENCES Território (Nome) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS Continente (
@@ -146,12 +146,11 @@ CREATE TABLE IF NOT EXISTS Continente (
 CREATE TABLE IF NOT EXISTS AmigoDe (
     IDUsuário1 INT UNSIGNED NOT NULL,
     IDUsuário2 INT UNSIGNED NOT NULL,
-    CONSTRAINT PKAmigoDe
-    PRIMARY KEY (IDUsuário1, IDUsuário2),
-    CONSTRAINT FK1AmigoDe
-    FOREIGN KEY (IDUsuário1) REFERENCES Usuário(ID),
-    CONSTRAINT FK2AmigoDe
-    FOREIGN KEY (IDUsuário2) REFERENCES Usuário(ID)
+    CONSTRAINT PKAmigoDe PRIMARY KEY (IDUsuário1 , IDUsuário2),
+    CONSTRAINT FK1AmigoDe FOREIGN KEY (IDUsuário1)
+        REFERENCES Usuário (ID) ON UPDATE RESTRICT ON DELETE CASCADE ,
+    CONSTRAINT FK2AmigoDe FOREIGN KEY (IDUsuário2)
+        REFERENCES Usuário (ID) ON UPDATE RESTRICT ON DELETE CASCADE
 );
 
 
@@ -163,9 +162,9 @@ CREATE TABLE IF NOT EXISTS TrocaMensagens (
     DataHoraEnvio DATETIME NOT NULL,
     CONSTRAINT PKTrocaMensagens PRIMARY KEY (IDUsuário1 , IDUsuário2 , DataHoraEnvio),
     CONSTRAINT FK1TrocaMensagens FOREIGN KEY (IDUsuário1)
-        REFERENCES Usuário (ID),
+        REFERENCES Usuário (ID) ON UPDATE RESTRICT ON DELETE RESTRICT,
     CONSTRAINT FK2TrocaMensagens FOREIGN KEY (IDUsuário2)
-        REFERENCES Usuário (ID)
+        REFERENCES Usuário (ID) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 
@@ -177,7 +176,7 @@ CREATE TABLE IF NOT EXISTS Participa (
     CONSTRAINT FK1Participa FOREIGN KEY (IDUsuário)
         REFERENCES Usuário (ID),
     CONSTRAINT FK2Participa FOREIGN KEY (NomeGrupo)
-        REFERENCES Grupo (Nome)
+        REFERENCES Grupo (Nome) ON UPDATE RESTRICT ON DELETE CASCADE
 );
 
 
@@ -189,9 +188,9 @@ CREATE TABLE IF NOT EXISTS EnviaMSG (
     DataHoraEnvio DATETIME NOT NULL,
     CONSTRAINT PKEnviaMSG PRIMARY KEY (IDUsuário , NomeGrupo , DataHoraEnvio),
     CONSTRAINT FK1EnviaMSG FOREIGN KEY (IDUsuário)
-        REFERENCES Usuário (ID),
+        REFERENCES Usuário (ID) ON UPDATE RESTRICT ON DELETE RESTRICT,
     CONSTRAINT FK2EnviaMSG FOREIGN KEY (NomeGrupo)
-        REFERENCES Grupo (Nome)
+        REFERENCES Grupo (Nome) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 
@@ -200,9 +199,9 @@ CREATE TABLE IF NOT EXISTS FazFronteira (
     NomeTerritório2 INT NOT NULL,
     CONSTRAINT PKFazFronteira PRIMARY KEY (NomeTerritório1 , NomeTerritório2),
     CONSTRAINT FK1FazFronteira FOREIGN KEY (NomeTerritório1)
-        REFERENCES Território (Nome),
+        REFERENCES Território (Nome) ON UPDATE RESTRICT ON DELETE RESTRICT,
     CONSTRAINT FK2FazFronteira FOREIGN KEY (NomeTerritório2)
-        REFERENCES Território (Nome)
+        REFERENCES Território (Nome) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 
@@ -212,9 +211,9 @@ CREATE TABLE IF NOT EXISTS Compõe (
     NomeContinente VARCHAR(20) NOT NULL,
     CONSTRAINT PKCompõe PRIMARY KEY (NomeTerritório),
     CONSTRAINT FK1Compõe FOREIGN KEY (NomeTerritório)
-        REFERENCES Território (Nome),
+        REFERENCES Território (Nome) ON UPDATE RESTRICT ON DELETE RESTRICT,
     CONSTRAINT FK2Compõe FOREIGN KEY (NomeContinente)
-        REFERENCES Continente (Nome)
+        REFERENCES Continente (Nome) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 
@@ -224,10 +223,10 @@ CREATE TABLE IF NOT EXISTS Conquista (
     CorJogador CHAR(8) NOT NULL,
     NomeContinente VARCHAR(20) NOT NULL,
     CONSTRAINT PKConquista PRIMARY KEY (IDUsuário , CorJogador , NomeContinente),
-    CONSTRAINT FK1Conquista FOREIGN KEY (IDUsuário,CorJogador)
-        REFERENCES Jogador (ID,Cor),
+    CONSTRAINT FK1Conquista FOREIGN KEY (IDUsuário , CorJogador)
+        REFERENCES Jogador (ID , Cor) ON UPDATE CASCADE,
     CONSTRAINT FK3Conquista FOREIGN KEY (NomeContinente)
-        REFERENCES Continente (Nome)
+        REFERENCES Continente (Nome) ON UPDATE RESTRICT ON DELETE CASCADE
 );
 
 
@@ -237,8 +236,8 @@ CREATE TABLE IF NOT EXISTS Joga (
     CorJogador CHAR(8) NOT NULL,
     IDPartida INT UNSIGNED NOT NULL,
     CONSTRAINT PKJoga PRIMARY KEY (IDUsuário , CorJogador , IDPartida),
-    CONSTRAINT FK1Joga FOREIGN KEY (IDUsuário,CorJogador)
-        REFERENCES Jogador (ID,Cor),
+    CONSTRAINT FK1Joga FOREIGN KEY (IDUsuário , CorJogador)
+        REFERENCES Jogador (ID , Cor),
     CONSTRAINT FK2Joga FOREIGN KEY (IDPartida)
         REFERENCES Partida (ID)
 );
@@ -250,8 +249,8 @@ CREATE TABLE IF NOT EXISTS EliminaJogador (
     CorJogadorAlvo CHAR(8) NOT NULL,
     Descrição INT NOT NULL,
     CONSTRAINT PKEliminaJogador PRIMARY KEY (IDUsuárioAlvo , CorJogadorAlvo , Descrição),
-    CONSTRAINT FK1EliminaJogador FOREIGN KEY (IDUsuárioAlvo,CorJogadorAlvo)
-        REFERENCES Jogador (ID,Cor),
+    CONSTRAINT FK1EliminaJogador FOREIGN KEY (IDUsuárioAlvo , CorJogadorAlvo)
+        REFERENCES Jogador (ID , Cor),
     CONSTRAINT FK2EliminaJogador FOREIGN KEY (Descrição)
         REFERENCES Objetivo (Descrição)
 );
@@ -275,6 +274,6 @@ CREATE TABLE IF NOT EXISTS Possui (
     CONSTRAINT PKPossui PRIMARY KEY (NomeCarta , IDUsuário , CorJogador),
     CONSTRAINT FK1Possui FOREIGN KEY (NomeCarta)
         REFERENCES Carta (Nome),
-    CONSTRAINT FK2Possui FOREIGN KEY (IDUsuário,CorJogador)
-        REFERENCES Jogador (ID,Cor)
+    CONSTRAINT FK2Possui FOREIGN KEY (IDUsuário , CorJogador)
+        REFERENCES Jogador (ID , Cor)
 );
