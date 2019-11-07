@@ -4,28 +4,43 @@ CREATE DATABASE IF NOT EXISTS WARGAME;
 
 USE WARGAME;
 
+CREATE TABLE IF NOT EXISTS NOME_CARTAS (
+    Código INT NOT NULL,
+    Nome VARCHAR(20) NOT NULL,
+    CONSTRAINT PKNOME_CARTAS PRIMARY KEY (Código)
+);
+
+CREATE TABLE IF NOT EXISTS DESC_OBJETIVOS (
+    Código INT NOT NULL,
+    Descrição VARCHAR(152) NOT NULL,
+    CONSTRAINT PKDESC_OBJETIVOS PRIMARY KEY (Código)
+);
+
 CREATE TABLE IF NOT EXISTS Usuário (
     Nome CHAR(10) NOT NULL,
     Idade INT UNSIGNED,
-    Sexo CHAR(1),
-    Ranking INT UNSIGNED NOT NULL UNIQUE,
+    Sexo ENUM('M','F'),
+    Ranking INT UNSIGNED NOT NULL,
     ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
     PartidasGanhas INT UNSIGNED NOT NULL,
     PartidasJogadas INT UNSIGNED NOT NULL,
     TempoJogado TIME NOT NULL,
-    CONSTRAINT PKUsuário PRIMARY KEY (ID)
+    CONSTRAINT PKUsuário PRIMARY KEY (ID),
+    CHECK(Idade <= 100 AND Idade >= 6)
 );
 
 CREATE TABLE IF NOT EXISTS Objetivo (
     Descrição INT NOT NULL,
     Categoria CHAR(20) NOT NULL,
-    CONSTRAINT PKObjetivo PRIMARY KEY (Descrição)
+    CONSTRAINT PKObjetivo PRIMARY KEY (Descrição),
+    CONSTRAINT FKObjetivo
+    FOREIGN KEY (Descrição) REFERENCES DESC_OBJETIVOS(Código)
+    ON UPDATE RESTRICT ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Jogador (
-    Cor CHAR(8) NOT NULL,
+    Cor ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
     ID INT UNSIGNED NOT NULL,
-    QuantidadeDeTropas INT UNSIGNED NOT NULL,
     DescriçãoObjetivo INT NOT NULL,
     CONSTRAINT PKJogador PRIMARY KEY (ID , Cor),
     CONSTRAINT FK1Jogador FOREIGN KEY (ID)
@@ -60,6 +75,7 @@ CREATE TABLE IF NOT EXISTS Partida (
     IDUsuário4 INT UNSIGNED,
     IDUsuário5 INT UNSIGNED,
     IDUsuário6 INT UNSIGNED,
+    CHECK(NúmeroDeJogadores <=6 AND NúmeroDeJogadores >=3),
     CONSTRAINT PKPartida PRIMARY KEY (ID),
     CONSTRAINT FK1Partida FOREIGN KEY (IDUsuário1)
         REFERENCES Usuário (ID)
@@ -86,13 +102,16 @@ CREATE TABLE IF NOT EXISTS Partida (
 
 CREATE TABLE IF NOT EXISTS Carta (
     Nome INT NOT NULL,
-    Tipo CHAR(9) NOT NULL,
-    CONSTRAINT PKCarta PRIMARY KEY (Nome)
+    Tipo ENUM('TRIANGULO','QUADRADO','CIRCULO','CURINGA') NOT NULL,
+    CONSTRAINT PKCarta PRIMARY KEY (Nome),
+    CONSTRAINT FKCarta
+    FOREIGN KEY (Nome) REFERENCES NOME_CARTAS(Código) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS ObjetivoTerritório (
     Descrição INT NOT NULL,
     QtdTerritório INT NOT NULL,
+    CHECK(QtdTerritório = 18 OR QtdTerritório = 24),
     CONSTRAINT PKObjTerritório PRIMARY KEY (Descrição),
     CONSTRAINT FKObjTerritório FOREIGN KEY (Descrição)
         REFERENCES Objetivo (Descrição)
@@ -103,7 +122,7 @@ CREATE TABLE IF NOT EXISTS ObjetivoTerritório (
 
 CREATE TABLE IF NOT EXISTS ObjetivoJogador (
     Descrição INT NOT NULL,
-    ExércitoAlvo CHAR(8) NOT NULL,
+    ExércitoAlvo ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
     CONSTRAINT PKObjJogador PRIMARY KEY (Descrição , ExércitoAlvo),
     CONSTRAINT FKObjJogador FOREIGN KEY (Descrição)
         REFERENCES Objetivo (Descrição)
@@ -121,12 +140,15 @@ CREATE TABLE IF NOT EXISTS ObjetivoContinente (
 CREATE TABLE IF NOT EXISTS Território (
     Nome INT NOT NULL,
     TropasPresentes INT UNSIGNED NOT NULL,
-    CONSTRAINT PKTerritório PRIMARY KEY (Nome)
+    CONSTRAINT PKTerritório PRIMARY KEY (Nome),
+    CONSTRAINT FKTerritório 
+    FOREIGN KEY (Nome) REFERENCES NOME_CARTAS(Código)
+    ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS Ocupa (
     IDUsuário INT UNSIGNED NOT NULL,
-    CorJogador CHAR(8) NOT NULL,
+    CorJogador ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
     NomeTerritório INT NOT NULL,
     CONSTRAINT PKOcupa PRIMARY KEY (IDUsuário , CorJogador , NomeTerritório),
     CONSTRAINT FK1Ocupa FOREIGN KEY (IDUsuário , CorJogador)
@@ -138,7 +160,7 @@ CREATE TABLE IF NOT EXISTS Ocupa (
 );
 
 CREATE TABLE IF NOT EXISTS Continente (
-    Nome VARCHAR(20) NOT NULL,
+    Nome ENUM('ÁSIA','ÁFRICA','AMÉRICA DO SUL','AMÉRICA DO NORTE','EUROPA','OCEANIA') NOT NULL,
     QuantidadeDeTerritórios INT UNSIGNED NOT NULL,
     CONSTRAINT PKContinente PRIMARY KEY (Nome)
 );
@@ -209,7 +231,7 @@ CREATE TABLE IF NOT EXISTS FazFronteira (
 
 CREATE TABLE IF NOT EXISTS Compõe (
     NomeTerritório INT NOT NULL,
-    NomeContinente VARCHAR(20) NOT NULL,
+    NomeContinente ENUM('ÁSIA','ÁFRICA','AMÉRICA DO SUL','AMÉRICA DO NORTE','EUROPA','OCEANIA') NOT NULL,
     CONSTRAINT PKCompõe PRIMARY KEY (NomeTerritório),
     CONSTRAINT FK1Compõe FOREIGN KEY (NomeTerritório)
         REFERENCES Território (Nome)
@@ -221,8 +243,8 @@ CREATE TABLE IF NOT EXISTS Compõe (
 
 CREATE TABLE IF NOT EXISTS Conquista (
     IDUsuário INT UNSIGNED NOT NULL,
-    CorJogador CHAR(8) NOT NULL,
-    NomeContinente VARCHAR(20) NOT NULL,
+    CorJogador ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
+    NomeContinente ENUM('ÁSIA','ÁFRICA','AMÉRICA DO SUL','AMÉRICA DO NORTE','EUROPA','OCEANIA') NOT NULL,
     CONSTRAINT PKConquista PRIMARY KEY (IDUsuário , CorJogador , NomeContinente),
     CONSTRAINT FK1Conquista FOREIGN KEY (IDUsuário , CorJogador)
         REFERENCES Jogador (ID , Cor)
@@ -234,7 +256,7 @@ CREATE TABLE IF NOT EXISTS Conquista (
 
 CREATE TABLE IF NOT EXISTS Joga (
     IDUsuário INT UNSIGNED NOT NULL,
-    CorJogador CHAR(8) NOT NULL,
+    CorJogador ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
     IDPartida INT UNSIGNED NOT NULL,
     CONSTRAINT PKJoga PRIMARY KEY (IDUsuário , CorJogador , IDPartida),
     CONSTRAINT FK1Joga FOREIGN KEY (IDUsuário , CorJogador)
@@ -247,7 +269,7 @@ CREATE TABLE IF NOT EXISTS Joga (
 
 CREATE TABLE IF NOT EXISTS DominaContinentes (
     Descrição INT NOT NULL,
-    NomeContinente VARCHAR(20) NOT NULL,
+    NomeContinente ENUM('ÁSIA','ÁFRICA','AMÉRICA DO SUL','AMÉRICA DO NORTE','EUROPA','OCEANIA') NOT NULL,
     CONSTRAINT PKDominaContinentes PRIMARY KEY (Descrição , NomeContinente),
     CONSTRAINT FK1DominaContinentes FOREIGN KEY (NomeContinente)
         REFERENCES Continente (Nome)
@@ -260,7 +282,7 @@ CREATE TABLE IF NOT EXISTS DominaContinentes (
 CREATE TABLE IF NOT EXISTS Possui (
     NomeCarta INT NOT NULL,
     IDUsuário INT UNSIGNED NOT NULL,
-    CorJogador CHAR(8) NOT NULL,
+    CorJogador ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
     CONSTRAINT PKPossui PRIMARY KEY (NomeCarta , IDUsuário , CorJogador),
     CONSTRAINT FK1Possui FOREIGN KEY (NomeCarta)
         REFERENCES Carta (Nome)
