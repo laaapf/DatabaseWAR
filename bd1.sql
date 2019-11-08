@@ -43,13 +43,9 @@ CREATE TABLE IF NOT EXISTS Objetivo (
 CREATE TABLE IF NOT EXISTS Jogador (
     Cor ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
     ID INT UNSIGNED NOT NULL,
-    DescriçãoObjetivo INT NOT NULL,
     CONSTRAINT PKJogador PRIMARY KEY (ID , Cor),
-    CONSTRAINT FK1Jogador FOREIGN KEY (ID)
+    CONSTRAINT FKJogador FOREIGN KEY (ID)
         REFERENCES Usuário (ID)
-        ON UPDATE RESTRICT ON DELETE RESTRICT,
-    CONSTRAINT FK2Jogador FOREIGN KEY (DescriçãoObjetivo)
-        REFERENCES Objetivo (Descrição)
         ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
@@ -142,7 +138,6 @@ CREATE TABLE IF NOT EXISTS ObjetivoContinente (
 
 CREATE TABLE IF NOT EXISTS Território (
     Nome INT NOT NULL,
-    TropasPresentes INT UNSIGNED NOT NULL,
     CHECK(Nome <= 41 AND Nome >= 0),
     CONSTRAINT PKTerritório PRIMARY KEY (Nome),
     CONSTRAINT FKTerritório 
@@ -154,6 +149,7 @@ CREATE TABLE IF NOT EXISTS Ocupa (
     IDUsuário INT UNSIGNED NOT NULL,
     CorJogador ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
     NomeTerritório INT NOT NULL,
+    TropasPresentes INT UNSIGNED NOT NULL,
     CHECK(NomeTerritório <= 41 AND NomeTerritório >= 0),
     CONSTRAINT PKOcupa PRIMARY KEY (IDUsuário , CorJogador , NomeTerritório),
     CONSTRAINT FK1Ocupa FOREIGN KEY (IDUsuário , CorJogador)
