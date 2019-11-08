@@ -21,27 +21,27 @@ CREATE TABLE IF NOT EXISTS DESC_OBJETIVOS (
 CREATE TABLE IF NOT EXISTS Usuário (
     Nome CHAR(10) NOT NULL,
     Idade INT UNSIGNED,
-    Sexo ENUM('M','F'),
+    Sexo ENUM('M', 'F'),
     Ranking INT UNSIGNED NOT NULL,
     ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
     PartidasGanhas INT UNSIGNED NOT NULL,
     PartidasJogadas INT UNSIGNED NOT NULL,
     TempoJogado TIME NOT NULL,
     CONSTRAINT PKUsuário PRIMARY KEY (ID),
-    CHECK(Idade <= 100 AND Idade >= 6)
+    CHECK (Idade <= 100 AND Idade >= 6)
 );
 
 CREATE TABLE IF NOT EXISTS Objetivo (
     Descrição INT NOT NULL,
     Categoria CHAR(20) NOT NULL,
     CONSTRAINT PKObjetivo PRIMARY KEY (Descrição),
-    CONSTRAINT FKObjetivo
-    FOREIGN KEY (Descrição) REFERENCES DESC_OBJETIVOS(Código)
-    ON UPDATE RESTRICT ON DELETE CASCADE
+    CONSTRAINT FKObjetivo FOREIGN KEY (Descrição)
+        REFERENCES DESC_OBJETIVOS (Código)
+        ON UPDATE RESTRICT ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Jogador (
-    Cor ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
+    Cor ENUM('VERDE', 'VERMELHO', 'AMARELO', 'PRETO', 'BRANCO', 'AZUL') NOT NULL,
     ID INT UNSIGNED NOT NULL,
     DescriçãoObjetivo INT NOT NULL,
     CONSTRAINT PKJogador PRIMARY KEY (ID , Cor),
@@ -77,7 +77,8 @@ CREATE TABLE IF NOT EXISTS Partida (
     IDUsuário4 INT UNSIGNED,
     IDUsuário5 INT UNSIGNED,
     IDUsuário6 INT UNSIGNED,
-    CHECK(NúmeroDeJogadores <=6 AND NúmeroDeJogadores >=3),
+    CHECK (NúmeroDeJogadores <= 6
+        AND NúmeroDeJogadores >= 3),
     CONSTRAINT PKPartida PRIMARY KEY (ID),
     CONSTRAINT FK1Partida FOREIGN KEY (IDUsuário1)
         REFERENCES Usuário (ID)
@@ -104,17 +105,18 @@ CREATE TABLE IF NOT EXISTS Partida (
 
 CREATE TABLE IF NOT EXISTS Carta (
     Nome INT NOT NULL,
-    Tipo ENUM('TRIANGULO','QUADRADO','CIRCULO','CURINGA') NOT NULL,
-    CHECK(Nome >= 0 AND Nome <= 42),
+    Tipo ENUM('TRIANGULO', 'QUADRADO', 'CIRCULO', 'CURINGA') NOT NULL,
     CONSTRAINT PKCarta PRIMARY KEY (Nome),
-    CONSTRAINT FKCarta
-    FOREIGN KEY (Nome) REFERENCES NOME_CARTAS(Código) ON UPDATE RESTRICT ON DELETE RESTRICT
+    CONSTRAINT FKCarta FOREIGN KEY (Nome)
+        REFERENCES NOME_CARTAS (Código)
+        ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS ObjetivoTerritório (
     Descrição INT NOT NULL,
     QtdTerritório INT NOT NULL,
-    CHECK(QtdTerritório = 18 OR QtdTerritório = 24),
+    CHECK (QtdTerritório = 18
+        OR QtdTerritório = 24),
     CONSTRAINT PKObjTerritório PRIMARY KEY (Descrição),
     CONSTRAINT FKObjTerritório FOREIGN KEY (Descrição)
         REFERENCES Objetivo (Descrição)
@@ -125,7 +127,7 @@ CREATE TABLE IF NOT EXISTS ObjetivoTerritório (
 
 CREATE TABLE IF NOT EXISTS ObjetivoJogador (
     Descrição INT NOT NULL,
-    ExércitoAlvo ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
+    ExércitoAlvo ENUM('VERDE', 'VERMELHO', 'AMARELO', 'PRETO', 'BRANCO', 'AZUL') NOT NULL,
     CONSTRAINT PKObjJogador PRIMARY KEY (Descrição , ExércitoAlvo),
     CONSTRAINT FKObjJogador FOREIGN KEY (Descrição)
         REFERENCES Objetivo (Descrição)
@@ -142,19 +144,18 @@ CREATE TABLE IF NOT EXISTS ObjetivoContinente (
 
 CREATE TABLE IF NOT EXISTS Território (
     Nome INT NOT NULL,
-    CHECK(Nome <= 41 AND Nome >= 0),
+    CHECK (Nome <= 41 AND Nome >= 0),
     CONSTRAINT PKTerritório PRIMARY KEY (Nome),
-    CONSTRAINT FKTerritório 
-    FOREIGN KEY (Nome) REFERENCES NOME_CARTAS(Código)
-    ON UPDATE RESTRICT ON DELETE RESTRICT
+    CONSTRAINT FKTerritório FOREIGN KEY (Nome)
+        REFERENCES NOME_CARTAS (Código)
+        ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS Ocupa (
     IDUsuário INT UNSIGNED NOT NULL,
-    CorJogador ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
+    CorJogador ENUM('VERDE', 'VERMELHO', 'AMARELO', 'PRETO', 'BRANCO', 'AZUL') NOT NULL,
     NomeTerritório INT NOT NULL,
     TropasPresentes INT UNSIGNED NOT NULL,
-    CHECK(NomeTerritório <= 41 AND NomeTerritório >= 0),
     CONSTRAINT PKOcupa PRIMARY KEY (IDUsuário , CorJogador , NomeTerritório),
     CONSTRAINT FK1Ocupa FOREIGN KEY (IDUsuário , CorJogador)
         REFERENCES Jogador (ID , Cor)
@@ -165,7 +166,7 @@ CREATE TABLE IF NOT EXISTS Ocupa (
 );
 
 CREATE TABLE IF NOT EXISTS Continente (
-    Nome ENUM('ÁSIA','ÁFRICA','AMÉRICA DO SUL','AMÉRICA DO NORTE','EUROPA','OCEANIA') NOT NULL,
+    Nome ENUM('ÁSIA', 'ÁFRICA', 'AMÉRICA DO SUL', 'AMÉRICA DO NORTE', 'EUROPA', 'OCEANIA') NOT NULL,
     QuantidadeDeTerritórios INT UNSIGNED NOT NULL,
     CONSTRAINT PKContinente PRIMARY KEY (Nome)
 );
@@ -225,7 +226,6 @@ CREATE TABLE IF NOT EXISTS EnviaMSG (
 CREATE TABLE IF NOT EXISTS FazFronteira (
     NomeTerritório1 INT NOT NULL,
     NomeTerritório2 INT NOT NULL,
-    CHECK(NomeTerritório1 <= 41 AND NomeTerritório2 <= 41 AND NomeTerritório1 >= 0 AND NomeTerritório2 >= 0),
     CONSTRAINT PKFazFronteira PRIMARY KEY (NomeTerritório1 , NomeTerritório2),
     CONSTRAINT FK1FazFronteira FOREIGN KEY (NomeTerritório1)
         REFERENCES Território (Nome)
@@ -237,8 +237,7 @@ CREATE TABLE IF NOT EXISTS FazFronteira (
 
 CREATE TABLE IF NOT EXISTS Compõe (
     NomeTerritório INT NOT NULL,
-    NomeContinente ENUM('ÁSIA','ÁFRICA','AMÉRICA DO SUL','AMÉRICA DO NORTE','EUROPA','OCEANIA') NOT NULL,
-    CHECK(NomeTerritório <= 41 AND NomeTerritório >= 0),
+    NomeContinente ENUM('ÁSIA', 'ÁFRICA', 'AMÉRICA DO SUL', 'AMÉRICA DO NORTE', 'EUROPA', 'OCEANIA') NOT NULL,
     CONSTRAINT PKCompõe PRIMARY KEY (NomeTerritório),
     CONSTRAINT FK1Compõe FOREIGN KEY (NomeTerritório)
         REFERENCES Território (Nome)
@@ -250,8 +249,8 @@ CREATE TABLE IF NOT EXISTS Compõe (
 
 CREATE TABLE IF NOT EXISTS Conquista (
     IDUsuário INT UNSIGNED NOT NULL,
-    CorJogador ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
-    NomeContinente ENUM('ÁSIA','ÁFRICA','AMÉRICA DO SUL','AMÉRICA DO NORTE','EUROPA','OCEANIA') NOT NULL,
+    CorJogador ENUM('VERDE', 'VERMELHO', 'AMARELO', 'PRETO', 'BRANCO', 'AZUL') NOT NULL,
+    NomeContinente ENUM('ÁSIA', 'ÁFRICA', 'AMÉRICA DO SUL', 'AMÉRICA DO NORTE', 'EUROPA', 'OCEANIA') NOT NULL,
     CONSTRAINT PKConquista PRIMARY KEY (IDUsuário , CorJogador , NomeContinente),
     CONSTRAINT FK1Conquista FOREIGN KEY (IDUsuário , CorJogador)
         REFERENCES Jogador (ID , Cor)
@@ -263,7 +262,7 @@ CREATE TABLE IF NOT EXISTS Conquista (
 
 CREATE TABLE IF NOT EXISTS Joga (
     IDUsuário INT UNSIGNED NOT NULL,
-    CorJogador ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
+    CorJogador ENUM('VERDE', 'VERMELHO', 'AMARELO', 'PRETO', 'BRANCO', 'AZUL') NOT NULL,
     IDPartida INT UNSIGNED NOT NULL,
     CONSTRAINT PKJoga PRIMARY KEY (IDUsuário , CorJogador , IDPartida),
     CONSTRAINT FK1Joga FOREIGN KEY (IDUsuário , CorJogador)
@@ -276,7 +275,7 @@ CREATE TABLE IF NOT EXISTS Joga (
 
 CREATE TABLE IF NOT EXISTS DominaContinentes (
     Descrição INT NOT NULL,
-    NomeContinente ENUM('ÁSIA','ÁFRICA','AMÉRICA DO SUL','AMÉRICA DO NORTE','EUROPA','OCEANIA') NOT NULL,
+    NomeContinente ENUM('ÁSIA', 'ÁFRICA', 'AMÉRICA DO SUL', 'AMÉRICA DO NORTE', 'EUROPA', 'OCEANIA') NOT NULL,
     CONSTRAINT PKDominaContinentes PRIMARY KEY (Descrição , NomeContinente),
     CONSTRAINT FK1DominaContinentes FOREIGN KEY (NomeContinente)
         REFERENCES Continente (Nome)
@@ -289,8 +288,7 @@ CREATE TABLE IF NOT EXISTS DominaContinentes (
 CREATE TABLE IF NOT EXISTS Possui (
     NomeCarta INT NOT NULL,
     IDUsuário INT UNSIGNED NOT NULL,
-    CorJogador ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
-    CHECK (NomeCarta >= 0 AND NomeCarta <= 42),
+    CorJogador ENUM('VERDE', 'VERMELHO', 'AMARELO', 'PRETO', 'BRANCO', 'AZUL') NOT NULL,
     CONSTRAINT PKPossui PRIMARY KEY (NomeCarta , IDUsuário , CorJogador),
     CONSTRAINT FK1Possui FOREIGN KEY (NomeCarta)
         REFERENCES Carta (Nome)
@@ -345,6 +343,50 @@ INSERT INTO NOME_CARTAS (Código,Nome) VALUES (40,'Vietnã');
 INSERT INTO NOME_CARTAS (Código,Nome) VALUES (41,'Vladivostok');
 INSERT INTO NOME_CARTAS (Código,Nome) VALUES (42,'Curinga');
 
+INSERT INTO Carta VALUES(0, 'TRIANGULO');
+INSERT INTO Carta VALUES(1, 'TRIANGULO');
+INSERT INTO Carta VALUES(2, 'CIRCULO');
+INSERT INTO Carta VALUES(3, 'TRIANGULO');
+INSERT INTO Carta VALUES(4, 'CIRCULO');
+INSERT INTO Carta VALUES(5, 'QUADRADO');
+INSERT INTO Carta VALUES(6, 'TRIANGULO');
+INSERT INTO Carta VALUES(7, 'TRIANGULO');
+INSERT INTO Carta VALUES(8, 'QUADRADO');
+INSERT INTO Carta VALUES(9, 'CIRCULO');
+INSERT INTO Carta VALUES(10, 'QUADRADO');
+INSERT INTO Carta VALUES(11, 'CIRCULO');
+INSERT INTO Carta VALUES(12, 'QUADRADO');
+INSERT INTO Carta VALUES(13, 'CIRCULO');
+INSERT INTO Carta VALUES(14, 'TRIANGULO');
+INSERT INTO Carta VALUES(15, 'QUADRADO');
+INSERT INTO Carta VALUES(16, 'CIRCULO');
+INSERT INTO Carta VALUES(17, 'QUADRADO');
+INSERT INTO Carta VALUES(18, 'CIRCULO');
+INSERT INTO Carta VALUES(19, 'TRIANGULO');
+INSERT INTO Carta VALUES(20, 'QUADRADO');
+INSERT INTO Carta VALUES(21, 'QUADRADO');
+INSERT INTO Carta VALUES(22, 'CIRCULO');
+INSERT INTO Carta VALUES(23, 'CIRCULO');
+INSERT INTO Carta VALUES(24, 'QUADRADO');
+INSERT INTO Carta VALUES(25, 'CIRCULO');
+INSERT INTO Carta VALUES(26, 'TRIANGULO');
+INSERT INTO Carta VALUES(27, 'CIRCULO');
+INSERT INTO Carta VALUES(28, 'TRIANGULO');
+INSERT INTO Carta VALUES(29, 'QUADRADO');
+INSERT INTO Carta VALUES(30, 'QUADRADO');
+INSERT INTO Carta VALUES(31, 'CIRCULO');
+INSERT INTO Carta VALUES(32, 'QUADRADO');
+INSERT INTO Carta VALUES(33, 'TRIANGULO');
+INSERT INTO Carta VALUES(34, 'QUADRADO');
+INSERT INTO Carta VALUES(35, 'CIRCULO');
+INSERT INTO Carta VALUES(36, 'QUADRADO');
+INSERT INTO Carta VALUES(37, 'TRIANGULO');
+INSERT INTO Carta VALUES(38, 'TRIANGULO');
+INSERT INTO Carta VALUES(39, 'TRIANGULO');
+INSERT INTO Carta VALUES(40, 'TRIANGULO');
+INSERT INTO Carta VALUES(41, 'CIRCULO');
+INSERT INTO Carta VALUES(42, 'CURINGA');
+
 INSERT INTO DESC_OBJETIVOS (Código,Descrição) VALUES (0,'Destruir totalmente os Exércitos Azuis. Se voce é que possui os exércitos AZUIS ou se o jogador que o possui for eliminado por um outro jogador.');
 INSERT INTO DESC_OBJETIVOS (Código,Descrição) VALUES (1,'Destruir totalmente os Exércitos Amarelos. Se voce é que possui os exércitos AMALORES ou se o jogador que o possui for eliminado por um outro jogador.');
 INSERT INTO DESC_OBJETIVOS (Código,Descrição) VALUES (2,'Destruir totalmente os Exércitos Brancos. Se voce é que possui os exércitos BRANCOS ou se o jogador que o possui for eliminado por um outro jogador.');
@@ -359,6 +401,56 @@ INSERT INTO DESC_OBJETIVOS (Código,Descrição) VALUES (10,'Conquistar na total
 INSERT INTO DESC_OBJETIVOS (Código,Descrição) VALUES (11,'Conquistar na totalidade a Europa, a Oceania e mais um terceiro continente à sua escolha.');
 INSERT INTO DESC_OBJETIVOS (Código,Descrição) VALUES (12,'Conquistar 18 territórios e ocupar cada um deles com pelo menos 2 exércitos.');
 INSERT INTO DESC_OBJETIVOS (Código,Descrição) VALUES (13,'Conquistar 24 territórios à sua escolha.');
+
+INSERT INTO Território VALUES (0);
+INSERT INTO Território VALUES (1);
+INSERT INTO Território VALUES (2);
+INSERT INTO Território VALUES (3);
+INSERT INTO Território VALUES (4);
+INSERT INTO Território VALUES (5);
+INSERT INTO Território VALUES (6);
+INSERT INTO Território VALUES (7);
+INSERT INTO Território VALUES (8);
+INSERT INTO Território VALUES (9);
+INSERT INTO Território VALUES (10);
+INSERT INTO Território VALUES (11);
+INSERT INTO Território VALUES (12);
+INSERT INTO Território VALUES (13);
+INSERT INTO Território VALUES (14);
+INSERT INTO Território VALUES (15);
+INSERT INTO Território VALUES (16);
+INSERT INTO Território VALUES (17);
+INSERT INTO Território VALUES (18);
+INSERT INTO Território VALUES (19);
+INSERT INTO Território VALUES (20);
+INSERT INTO Território VALUES (21);
+INSERT INTO Território VALUES (22);
+INSERT INTO Território VALUES (23);
+INSERT INTO Território VALUES (24);
+INSERT INTO Território VALUES (25);
+INSERT INTO Território VALUES (26);
+INSERT INTO Território VALUES (27);
+INSERT INTO Território VALUES (28);
+INSERT INTO Território VALUES (29);
+INSERT INTO Território VALUES (30);
+INSERT INTO Território VALUES (31);
+INSERT INTO Território VALUES (32);
+INSERT INTO Território VALUES (33);
+INSERT INTO Território VALUES (34);
+INSERT INTO Território VALUES (35);
+INSERT INTO Território VALUES (36);
+INSERT INTO Território VALUES (37);
+INSERT INTO Território VALUES (38);
+INSERT INTO Território VALUES (39);
+INSERT INTO Território VALUES (40);
+INSERT INTO Território VALUES (41);
+
+INSERT INTO Continente VALUES ('AMÉRICA DO SUL',4);
+INSERT INTO Continente VALUES ('AMÉRICA DO NORTE',9);
+INSERT INTO Continente VALUES ('EUROPA',7);
+INSERT INTO Continente VALUES ('ÁFRICA',6);
+INSERT INTO Continente VALUES ('ÁSIA',11);
+INSERT INTO Continente VALUES ('OCEANIA',4);
 
 INSERT INTO Compõe VALUES (9,'AMÉRICA DO SUL');
 INSERT INTO Compõe VALUES (5,'AMÉRICA DO SUL');
@@ -401,6 +493,7 @@ INSERT INTO Compõe VALUES (6,'OCEANIA');
 INSERT INTO Compõe VALUES (8,'OCEANIA');
 INSERT INTO Compõe VALUES (27,'OCEANIA');
 INSERT INTO Compõe VALUES (36,'OCEANIA');
+
 INSERT INTO FazFronteira VALUES (0,12);
 INSERT INTO FazFronteira VALUES (0,23);
 INSERT INTO FazFronteira VALUES (1,21);
@@ -540,8 +633,4 @@ INSERT INTO FazFronteira VALUES (41,11);
 INSERT INTO FazFronteira VALUES (41,20);
 INSERT INTO FazFronteira VALUES (41,33);
 INSERT INTO FazFronteira VALUES (41,31);
-
-
-SELECT * FROM FazFronteira
-
 
