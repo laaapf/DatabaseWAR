@@ -402,6 +402,27 @@ INSERT INTO DESC_OBJETIVOS (Código,Descrição) VALUES (11,'Conquistar na total
 INSERT INTO DESC_OBJETIVOS (Código,Descrição) VALUES (12,'Conquistar 18 territórios e ocupar cada um deles com pelo menos 2 exércitos.');
 INSERT INTO DESC_OBJETIVOS (Código,Descrição) VALUES (13,'Conquistar 24 territórios à sua escolha.');
 
+INSERT INTO ObjetivoJogador VALUES(0,'AZUL');
+INSERT INTO ObjetivoJogador VALUES(1, 'AMARELO');
+INSERT INTO ObjetivoJogador VALUES(2, 'BRANCO');
+INSERT INTO ObjetivoJogador VALUES(3, 'VERDE');
+INSERT INTO ObjetivoJogador VALUES(4, 'PRETO');
+INSERT INTO ObjetivoJogador VALUES(5, 'VERMELHO');
+INSERT INTO ObjetivoContinente VALUES(6, 'AMÉRICA DO NORTE');
+INSERT INTO ObjetivoContinente VALUES(6, 'ÁFRICA');
+INSERT INTO ObjetivoContinente VALUES(7, 'ÁSIA');
+INSERT INTO ObjetivoContinente VALUES(7, 'ÁFRICA');
+INSERT INTO ObjetivoContinente VALUES(8, 'AMÉRICA DO NORTE');
+INSERT INTO ObjetivoContinente VALUES(8, 'OCEANIA');
+INSERT INTO ObjetivoContinente VALUES(9, 'EUROPA');
+INSERT INTO ObjetivoContinente VALUES(9, 'AMÉRICA DO SUL');
+INSERT INTO ObjetivoContinente VALUES(10, 'ÁSIA');
+INSERT INTO ObjetivoContinente VALUES(10, 'AMÉRICA DO SUL');
+INSERT INTO ObjetivoContinente VALUES(11, 'EUROPA');
+INSERT INTO ObjetivoContinente VALUES(11, 'OCEANIA');
+INSERT INTO ObjetivoTerritório VALUES(12, 18);
+INSERT INTO ObjetivoTerritório VALUES(13, 24);
+
 INSERT INTO Território VALUES (0);
 INSERT INTO Território VALUES (1);
 INSERT INTO Território VALUES (2);
