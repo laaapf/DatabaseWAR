@@ -1,5 +1,4 @@
 DROP DATABASE WARGAME;
-
 CREATE DATABASE IF NOT EXISTS WARGAME;
 
 USE WARGAME;
@@ -33,7 +32,7 @@ CREATE TABLE IF NOT EXISTS Usuário (
 
 CREATE TABLE IF NOT EXISTS Objetivo (
     Descrição INT NOT NULL,
-    Categoria CHAR(20) NOT NULL,
+    Categoria ENUM('ObjetivoJogador', 'ObjetivoTerritório', 'ObjetivoContinente') NOT NULL,
     CONSTRAINT PKObjetivo PRIMARY KEY (Descrição),
     CONSTRAINT FKObjetivo FOREIGN KEY (Descrição)
         REFERENCES DESC_OBJETIVOS (Código)
@@ -64,7 +63,8 @@ CREATE TABLE IF NOT EXISTS ObjetivoJogador (
 
 CREATE TABLE IF NOT EXISTS ObjetivoContinente (
     Descrição INT NOT NULL,
-    CONSTRAINT PKObjContinente PRIMARY KEY (Descrição),
+    Continente ENUM('ÁSIA','ÁFRICA','AMÉRICA DO SUL','AMÉRICA DO NORTE','EUROPA','OCEANIA') NOT NULL,
+    CONSTRAINT PKObjContinente PRIMARY KEY (Descrição, Continente),
     CONSTRAINT FKObjContinente FOREIGN KEY (Descrição)
         REFERENCES Objetivo (Descrição)
         ON UPDATE RESTRICT ON DELETE RESTRICT
@@ -399,6 +399,20 @@ INSERT INTO DESC_OBJETIVOS (Código,Descrição) VALUES (11,'Conquistar na total
 INSERT INTO DESC_OBJETIVOS (Código,Descrição) VALUES (12,'Conquistar 18 territórios e ocupar cada um deles com pelo menos 2 exércitos.');
 INSERT INTO DESC_OBJETIVOS (Código,Descrição) VALUES (13,'Conquistar 24 territórios à sua escolha.');
 
+INSERT INTO Objetivo VALUES (0, 'ObjetivoJogador');
+INSERT INTO Objetivo VALUES (1, 'ObjetivoJogador');
+INSERT INTO Objetivo VALUES (2, 'ObjetivoJogador');
+INSERT INTO Objetivo VALUES (3, 'ObjetivoJogador');
+INSERT INTO Objetivo VALUES (4, 'ObjetivoJogador');
+INSERT INTO Objetivo VALUES (5, 'ObjetivoJogador');
+INSERT INTO Objetivo VALUES (6, 'ObjetivoContinente');
+INSERT INTO Objetivo VALUES (7, 'ObjetivoContinente');
+INSERT INTO Objetivo VALUES (8, 'ObjetivoContinente');
+INSERT INTO Objetivo VALUES (9, 'ObjetivoContinente');
+INSERT INTO Objetivo VALUES (10, 'ObjetivoContinente');
+INSERT INTO Objetivo VALUES (11, 'ObjetivoContinente');
+INSERT INTO Objetivo VALUES (12, 'ObjetivoTerritório');
+INSERT INTO Objetivo VALUES (13, 'ObjetivoTerritório');
 
 
 INSERT INTO Território VALUES (0);
