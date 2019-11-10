@@ -22,11 +22,11 @@ CREATE TABLE IF NOT EXISTS Usuário (
     Nome CHAR(10) NOT NULL,
     Idade INT UNSIGNED,
     Sexo ENUM('M', 'F'),
-    Ranking INT UNSIGNED NOT NULL,
+    Ranking INT UNSIGNED,
     ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    PartidasGanhas INT UNSIGNED NOT NULL,
-    PartidasJogadas INT UNSIGNED NOT NULL,
-    TempoJogado TIME NOT NULL,
+    PartidasGanhas INT UNSIGNED NOT NULL DEFAULT 0,
+    PartidasJogadas INT UNSIGNED NOT NULL DEFAULT 0,
+    TempoJogado TIME NOT NULL DEFAULT 0,
     CONSTRAINT PKUsuário PRIMARY KEY (ID),
     CHECK (Idade <= 100 AND Idade >= 6)
 );
@@ -37,19 +37,45 @@ CREATE TABLE IF NOT EXISTS Objetivo (
     CONSTRAINT PKObjetivo PRIMARY KEY (Descrição),
     CONSTRAINT FKObjetivo FOREIGN KEY (Descrição)
         REFERENCES DESC_OBJETIVOS (Código)
-        ON UPDATE RESTRICT ON DELETE CASCADE
+        ON UPDATE RESTRICT ON DELETE RESTRICT
+);
+
+CREATE TABLE IF NOT EXISTS ObjetivoTerritório (
+    Descrição INT NOT NULL,
+    QtdTerritório INT NOT NULL,
+    CHECK (QtdTerritório = 18
+        OR QtdTerritório = 24),
+    CONSTRAINT PKObjTerritório PRIMARY KEY (Descrição),
+    CONSTRAINT FKObjTerritório FOREIGN KEY (Descrição)
+        REFERENCES Objetivo (Descrição)
+        ON UPDATE RESTRICT ON DELETE RESTRICT
+);
+
+
+
+CREATE TABLE IF NOT EXISTS ObjetivoJogador (
+    Descrição INT NOT NULL,
+    ExércitoAlvo ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
+    CONSTRAINT PKObjJogador PRIMARY KEY (Descrição , ExércitoAlvo),
+    CONSTRAINT FKObjJogador FOREIGN KEY (Descrição)
+        REFERENCES Objetivo (Descrição)
+        ON UPDATE RESTRICT ON DELETE RESTRICT
+);
+
+CREATE TABLE IF NOT EXISTS ObjetivoContinente (
+    Descrição INT NOT NULL,
+    CONSTRAINT PKObjContinente PRIMARY KEY (Descrição),
+    CONSTRAINT FKObjContinente FOREIGN KEY (Descrição)
+        REFERENCES Objetivo (Descrição)
+        ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS Jogador (
     Cor ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
     ID INT UNSIGNED NOT NULL,
-    DescriçãoObjetivo INT NOT NULL,
     CONSTRAINT PKJogador PRIMARY KEY (ID , Cor),
-    CONSTRAINT FK1Jogador FOREIGN KEY (ID)
+    CONSTRAINT FKJogador FOREIGN KEY (ID)
         REFERENCES Usuário (ID)
-        ON UPDATE RESTRICT ON DELETE RESTRICT,
-    CONSTRAINT FK2Jogador FOREIGN KEY (DescriçãoObjetivo)
-        REFERENCES Objetivo (Descrição)
         ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
@@ -112,35 +138,6 @@ CREATE TABLE IF NOT EXISTS Carta (
         ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
-CREATE TABLE IF NOT EXISTS ObjetivoTerritório (
-    Descrição INT NOT NULL,
-    QtdTerritório INT NOT NULL,
-    CHECK (QtdTerritório = 18
-        OR QtdTerritório = 24),
-    CONSTRAINT PKObjTerritório PRIMARY KEY (Descrição),
-    CONSTRAINT FKObjTerritório FOREIGN KEY (Descrição)
-        REFERENCES Objetivo (Descrição)
-        ON UPDATE RESTRICT ON DELETE RESTRICT
-);
-
-
-
-CREATE TABLE IF NOT EXISTS ObjetivoJogador (
-    Descrição INT NOT NULL,
-    ExércitoAlvo ENUM('VERDE','VERMELHO','AMARELO','PRETO','BRANCO','AZUL') NOT NULL,
-    CONSTRAINT PKObjJogador PRIMARY KEY (Descrição , ExércitoAlvo),
-    CONSTRAINT FKObjJogador FOREIGN KEY (Descrição)
-        REFERENCES Objetivo (Descrição)
-        ON UPDATE RESTRICT ON DELETE RESTRICT
-);
-
-CREATE TABLE IF NOT EXISTS ObjetivoContinente (
-    Descrição INT NOT NULL,
-    CONSTRAINT PKObjContinente PRIMARY KEY (Descrição),
-    CONSTRAINT FKObjContinente FOREIGN KEY (Descrição)
-        REFERENCES Objetivo (Descrição)
-        ON UPDATE RESTRICT ON DELETE RESTRICT
-);
 
 CREATE TABLE IF NOT EXISTS Território (
     Nome INT NOT NULL,
@@ -402,26 +399,7 @@ INSERT INTO DESC_OBJETIVOS (Código,Descrição) VALUES (11,'Conquistar na total
 INSERT INTO DESC_OBJETIVOS (Código,Descrição) VALUES (12,'Conquistar 18 territórios e ocupar cada um deles com pelo menos 2 exércitos.');
 INSERT INTO DESC_OBJETIVOS (Código,Descrição) VALUES (13,'Conquistar 24 territórios à sua escolha.');
 
-INSERT INTO ObjetivoJogador VALUES(0,'AZUL');
-INSERT INTO ObjetivoJogador VALUES(1, 'AMARELO');
-INSERT INTO ObjetivoJogador VALUES(2, 'BRANCO');
-INSERT INTO ObjetivoJogador VALUES(3, 'VERDE');
-INSERT INTO ObjetivoJogador VALUES(4, 'PRETO');
-INSERT INTO ObjetivoJogador VALUES(5, 'VERMELHO');
-INSERT INTO ObjetivoContinente VALUES(6, 'AMÉRICA DO NORTE');
-INSERT INTO ObjetivoContinente VALUES(6, 'ÁFRICA');
-INSERT INTO ObjetivoContinente VALUES(7, 'ÁSIA');
-INSERT INTO ObjetivoContinente VALUES(7, 'ÁFRICA');
-INSERT INTO ObjetivoContinente VALUES(8, 'AMÉRICA DO NORTE');
-INSERT INTO ObjetivoContinente VALUES(8, 'OCEANIA');
-INSERT INTO ObjetivoContinente VALUES(9, 'EUROPA');
-INSERT INTO ObjetivoContinente VALUES(9, 'AMÉRICA DO SUL');
-INSERT INTO ObjetivoContinente VALUES(10, 'ÁSIA');
-INSERT INTO ObjetivoContinente VALUES(10, 'AMÉRICA DO SUL');
-INSERT INTO ObjetivoContinente VALUES(11, 'EUROPA');
-INSERT INTO ObjetivoContinente VALUES(11, 'OCEANIA');
-INSERT INTO ObjetivoTerritório VALUES(12, 18);
-INSERT INTO ObjetivoTerritório VALUES(13, 24);
+
 
 INSERT INTO Território VALUES (0);
 INSERT INTO Território VALUES (1);
@@ -656,10 +634,24 @@ INSERT INTO FazFronteira VALUES (41,20);
 INSERT INTO FazFronteira VALUES (41,33);
 INSERT INTO FazFronteira VALUES (41,31);
 
-
-SELECT 
-    *
-FROM
-    FazFronteira
-
+INSERT INTO ObjetivoJogador VALUES(0,'AZUL');
+INSERT INTO ObjetivoJogador VALUES(1,'AMARELO');
+INSERT INTO ObjetivoJogador VALUES(2,'BRANCO');
+INSERT INTO ObjetivoJogador VALUES(3,'VERDE');
+INSERT INTO ObjetivoJogador VALUES(4,'PRETO');
+INSERT INTO ObjetivoJogador VALUES(5,'VERMELHO');
+INSERT INTO ObjetivoContinente VALUES(6,'AMÉRICA DO NORTE');
+INSERT INTO ObjetivoContinente VALUES(6,'ÁFRICA');
+INSERT INTO ObjetivoContinente VALUES(7,'ÁSIA');
+INSERT INTO ObjetivoContinente VALUES(7,'ÁFRICA');
+INSERT INTO ObjetivoContinente VALUES(8,'AMÉRICA DO NORTE');
+INSERT INTO ObjetivoContinente VALUES(8,'OCEANIA');
+INSERT INTO ObjetivoContinente VALUES(9,'EUROPA');
+INSERT INTO ObjetivoContinente VALUES(9,'AMÉRICA DO SUL');
+INSERT INTO ObjetivoContinente VALUES(10,'ÁSIA');
+INSERT INTO ObjetivoContinente VALUES(10,'AMÉRICA DO SUL');
+INSERT INTO ObjetivoContinente VALUES(11,'EUROPA');
+INSERT INTO ObjetivoContinente VALUES(11,'OCEANIA');
+INSERT INTO ObjetivoTerritório VALUES(12,18);
+INSERT INTO ObjetivoTerritório VALUES(13,24);
 
