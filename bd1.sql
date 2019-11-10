@@ -63,8 +63,7 @@ CREATE TABLE IF NOT EXISTS ObjetivoJogador (
 
 CREATE TABLE IF NOT EXISTS ObjetivoContinente (
     Descrição INT NOT NULL,
-    Continente ENUM('ÁSIA','ÁFRICA','AMÉRICA DO SUL','AMÉRICA DO NORTE','EUROPA','OCEANIA') NOT NULL,
-    CONSTRAINT PKObjContinente PRIMARY KEY (Descrição, Continente),
+    CONSTRAINT PKObjContinente PRIMARY KEY (Descrição),
     CONSTRAINT FKObjContinente FOREIGN KEY (Descrição)
         REFERENCES Objetivo (Descrição)
         ON UPDATE RESTRICT ON DELETE RESTRICT
@@ -654,18 +653,25 @@ INSERT INTO ObjetivoJogador VALUES(2,'BRANCO');
 INSERT INTO ObjetivoJogador VALUES(3,'VERDE');
 INSERT INTO ObjetivoJogador VALUES(4,'PRETO');
 INSERT INTO ObjetivoJogador VALUES(5,'VERMELHO');
-INSERT INTO ObjetivoContinente VALUES(6,'AMÉRICA DO NORTE');
-INSERT INTO ObjetivoContinente VALUES(6,'ÁFRICA');
-INSERT INTO ObjetivoContinente VALUES(7,'ÁSIA');
-INSERT INTO ObjetivoContinente VALUES(7,'ÁFRICA');
-INSERT INTO ObjetivoContinente VALUES(8,'AMÉRICA DO NORTE');
-INSERT INTO ObjetivoContinente VALUES(8,'OCEANIA');
-INSERT INTO ObjetivoContinente VALUES(9,'EUROPA');
-INSERT INTO ObjetivoContinente VALUES(9,'AMÉRICA DO SUL');
-INSERT INTO ObjetivoContinente VALUES(10,'ÁSIA');
-INSERT INTO ObjetivoContinente VALUES(10,'AMÉRICA DO SUL');
-INSERT INTO ObjetivoContinente VALUES(11,'EUROPA');
-INSERT INTO ObjetivoContinente VALUES(11,'OCEANIA');
+INSERT INTO ObjetivoContinente VALUES(6);
+INSERT INTO ObjetivoContinente VALUES(7);
+INSERT INTO ObjetivoContinente VALUES(8);
+INSERT INTO ObjetivoContinente VALUES(9);
+INSERT INTO ObjetivoContinente VALUES(10);
+INSERT INTO ObjetivoContinente VALUES(11);
 INSERT INTO ObjetivoTerritório VALUES(12,18);
 INSERT INTO ObjetivoTerritório VALUES(13,24);
+
+INSERT INTO DominaContinentes VALUES(6,'AMÉRICA DO NORTE');
+INSERT INTO DominaContinentes VALUES(6,'ÁFRICA');
+INSERT INTO DominaContinentes VALUES(7,'ÁSIA');
+INSERT INTO DominaContinentes VALUES(7,'ÁFRICA');
+INSERT INTO DominaContinentes VALUES(8,'AMÉRICA DO NORTE');
+INSERT INTO DominaContinentes VALUES(8,'OCEANIA');
+INSERT INTO DominaContinentes VALUES(9,'EUROPA');
+INSERT INTO DominaContinentes VALUES(9,'AMÉRICA DO SUL');
+INSERT INTO DominaContinentes VALUES(10,'ÁSIA');
+INSERT INTO DominaContinentes VALUES(10,'AMÉRICA DO SUL');
+INSERT INTO DominaContinentes VALUES(11,'EUROPA');
+INSERT INTO DominaContinentes VALUES(11,'OCEANIA');
 
